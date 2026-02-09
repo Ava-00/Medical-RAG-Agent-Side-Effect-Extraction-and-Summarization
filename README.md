@@ -1,48 +1,47 @@
-# Medical-RAG-Agent-Side-Effect-Extraction-and-Summarization
-An end-to-end Retrieval-Augmented Generation (RAG) system for extracting, validating, and synthesizing medication side-effects from real patient reviews using hybrid retrieval and agentic workflows.
+# 🧠 Medical RAG Agent — LangGraph Workflow on Patient Reviews
 
-Built using LangGraph, hybrid BM25 + dense retrieval, and instruction-tuned LLMs running fully locally in Google Colab.
+Agentic Retrieval-Augmented Generation system for extracting, validating, and synthesizing medication side-effects from real patient reviews using hybrid retrieval and LangGraph orchestration.
 
 ---
 
-## 🚀 Overview
+# 📌 Project Description
 
-This project implements a modular, agent-orchestrated RAG pipeline that transforms unstructured patient reviews into clinically grounded, structured side-effect insights with evidence citations.
+This project implements an end-to-end Medical RAG (Retrieval-Augmented Generation) pipeline that transforms unstructured patient drug reviews into clinically grounded, structured side-effect insights with evidence citations.
 
-The workflow includes:
+The system combines:
 
-* Semantic chunking of patient reviews
 * Hybrid retrieval (BM25 + dense embeddings)
-* Structured side-effect extraction
+* Agentic workflow orchestration (LangGraph)
+* Structured medical extraction
 * Evidence validation
-* Citation-grounded response synthesis
+* Citation-grounded answer synthesis
 
-The system is designed for medical review analysis, pharmacovigilance research, and adverse event monitoring.
+Built to support pharmacovigilance research, adverse event monitoring, and clinical review mining.
 
 ---
 
-## 🧠 Architecture
-
-Pipeline flow:
+# 🏗️ Architecture
 
 ```
 Patient Reviews
       ↓
-Chunking + BM25 Index
+Semantic Chunking
+      ↓
+BM25 Index
       ↓
 Dense Embeddings
       ↓
 Hybrid Retrieval
       ↓
-LangGraph Agent Workflow
-      ├── Extract
-      ├── Validate
-      └── Answer
+LangGraph Agents
+   ├── Extract
+   ├── Validate
+   └── Answer
 ```
 
 ---
 
-## 📂 Project Structure
+# 📂 Repository Structure
 
 ```
 medical-rag-agent/
@@ -51,8 +50,10 @@ medical-rag-agent/
 ├── embeddings_module.ipynb
 ├── langgraph_workflow_module.ipynb
 │
-├── pipeline_runner.ipynb / .py
+├── workflow_execution_script.py
 ├── README.md
+├── requirements.txt
+├── LICENSE
 │
 ├── artifacts/
 │   ├── chunks.parquet
@@ -64,18 +65,18 @@ medical-rag-agent/
 
 ---
 
-## 📊 Data Sources
+# 📊 Dataset
 
 Primary dataset:
 
 **UCI Drug Review Dataset (Drugs.com)**
-~215k real patient reviews with:
+~215k patient reviews containing:
 
 * Drug name
 * Condition
 * Review text
 * Rating
-* Usefulness votes
+* Usefulness score
 
 Optional evaluation dataset:
 
@@ -83,14 +84,18 @@ Optional evaluation dataset:
 
 ---
 
-## 🧩 Notebook Modules
+# 🧩 Notebook Modules
 
-### 1️⃣ `chunking_module.ipynb`
+## 1️⃣ Chunking Module
 
-* Cleans and standardizes patient reviews
-* Performs semantic chunking
-* Generates BM25 token corpus
-* Saves chunk metadata
+`chunking_module.ipynb`
+
+Functions:
+
+* Clean patient reviews
+* Semantic chunking
+* BM25 corpus creation
+* Metadata indexing
 
 Outputs:
 
@@ -101,12 +106,16 @@ bm25_tokens.pkl
 
 ---
 
-### 2️⃣ `embeddings_module.ipynb`
+## 2️⃣ Embeddings Module
 
-* Loads chunked corpus
-* Generates dense embeddings
-* Uses MiniLM / sentence-transformers encoders
-* Saves dense embedding matrix
+`embeddings_module.ipynb`
+
+Functions:
+
+* Load chunked corpus
+* Generate dense embeddings
+* Normalize vectors
+* Save embedding matrix
 
 Outputs:
 
@@ -117,19 +126,21 @@ embedding_meta.json
 
 ---
 
-### 3️⃣ `langgraph_workflow_module.ipynb`
+## 3️⃣ LangGraph Workflow Module
 
-Implements the agent pipeline:
+`langgraph_workflow_module.ipynb`
+
+Implements agent pipeline:
 
 Nodes:
 
-* Intent routing (optional)
+* Intent routing
 * Hybrid retrieval
-* Side-effect extraction (JSON)
+* Side-effect extraction
 * Evidence validation
-* Citation-grounded answer synthesis
+* Final synthesis
 
-Supports instruction-tuned local LLMs such as:
+Supports local LLMs such as:
 
 * Phi-3.5-mini-instruct
 * TinyLlama
@@ -137,37 +148,30 @@ Supports instruction-tuned local LLMs such as:
 
 ---
 
-## 🔎 Hybrid Retrieval
+# 🔎 Hybrid Retrieval
 
-Retrieval combines:
-
-* BM25 lexical relevance
-* Dense semantic similarity
-
-Score fusion:
+Combines lexical + semantic signals:
 
 ```
-Hybrid Score = α * Dense + (1−α) * BM25
+Hybrid Score = α · Dense + (1−α) · BM25
 ```
 
 Benefits:
 
 * Handles noisy patient language
 * Captures rare clinical terms
-* Improves recall + precision
+* Improves recall and precision
 
 ---
 
-## 🧾 Structured Extraction Schema
-
-Each extracted side-effect includes:
+# 🧾 Extraction Schema
 
 ```json
 {
   "side_effect": "nausea",
-  "severity": "mild",
+  "severity": "moderate",
   "onset": "first week",
-  "duration": "2 days",
+  "duration": "3 days",
   "negated": false,
   "evidence": "I felt nauseous after starting",
   "source_id": 18293
@@ -176,51 +180,70 @@ Each extracted side-effect includes:
 
 ---
 
-## ⚙️ Execution — Google Colab
+# ⚙️ Execution — Google Colab
 
-Run the full pipeline using the runner notebook/script.
-
-### Step 1 — Mount Drive
+## Step 1 — Mount Drive
 
 ```python
 from google.colab import drive
 drive.mount("/content/drive")
 ```
 
-### Step 2 — Set notebook folder path
+---
+
+## Step 2 — Run Pipeline
 
 ```python
-BASE = "/content/drive/MyDrive/medical-rag-agent"
+!python "/content/drive/MyDrive/<FOLDER>/workflow_execution_script.py" \
+  --base "/content/drive/MyDrive/<FOLDER>" \
+  --prompt "Does sertraline cause insomnia and how severe is it?"
 ```
 
-### Step 3 — Set prompt
+Runner executes:
 
-```python
-PROMPT = "Does sertraline cause insomnia and how severe is it?"
+1. Chunking notebook
+2. Embeddings notebook
+3. LangGraph workflow (with prompt injection)
+
+Outputs saved in:
+
 ```
-
-### Step 4 — Execute runner
-
-The runner will:
-
-1. Run chunking notebook
-2. Run embeddings notebook
-3. Inject prompt into LangGraph notebook
-4. Execute workflow
-5. Save executed notebooks
+executed_notebooks/
+```
 
 ---
 
-## 🧪 Example Queries
+# 🔁 Prompt Injection (Notebook 3 Setup)
 
-* “What side effects do people report for sertraline?”
-* “Does metformin cause dizziness?”
-* “Summarize patient experiences with Contrave.”
-* “List severe adverse effects mentioned.”
+Add at top of `langgraph_workflow_module.ipynb`:
+
+```python
+DEFAULT_QUERY = "What side effects do people report?"
+
+try:
+    QUERY = EXTERNAL_QUERY
+except NameError:
+    QUERY = DEFAULT_QUERY
+```
+
+Invoke with:
+
+```python
+result = app.invoke({"query": QUERY})
+```
 
 ---
 
-## 🛠️ Tech Stack
+# 🧪 Example Queries
+
+* What side effects are reported for sertraline?
+* Does metformin cause dizziness?
+* Summarize patient experience with Contrave.
+* List severe adverse effects mentioned.
+
+---
+
+# 🛠️ Tech Stack
 
 * LangGraph
 * LangChain Core
@@ -230,39 +253,62 @@ The runner will:
 * Rank-BM25
 * NumPy / Pandas
 * Google Colab
-* HuggingFace Models
 
 ---
 
-## 📈 Use Cases
+# 📈 Use Cases
 
 * Pharmacovigilance research
-* Adverse event monitoring
-* Drug safety signal detection
+* Drug safety monitoring
 * Clinical review mining
+* Adverse event detection
 * Healthcare RAG systems
 
 ---
 
-## 🔐 Notes
-
-* Runs fully locally (no external APIs required)
-* Embeddings + retrieval cached
-* LLM interchangeable
-* Supports prompt injection via runner
-
----
-
-## ✨ Future Work
+# 🚧 Future Work
 
 * Multi-query retrieval
-* Knowledge graph grounding
-* Temporal side-effect tracking
+* Ontology normalization
 * Frequency estimation
-* Clinical ontology normalization
+* Temporal side-effect tracking
+* Knowledge graph grounding
 
 ---
 
-## 📜 License
+# 📦 Installation
+
+Create `requirements.txt`:
+
+```
+langgraph
+langchain
+transformers
+sentence-transformers
+rank-bm25
+numpy
+pandas
+torch
+nbclient
+nbformat
+```
+
+Install:
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+# 📜 License
 
 MIT License
+
+---
+
+# ✨ Acknowledgements
+
+* UCI Machine Learning Repository
+* HuggingFace Transformers
+* LangGraph / LangChain
