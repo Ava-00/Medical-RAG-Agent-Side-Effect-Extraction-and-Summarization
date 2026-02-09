@@ -213,10 +213,8 @@ executed_notebooks/
 
 ---
 
-# 🔁 Prompt Injection (Notebook 3 Setup)
 
-Add at top of `langgraph_workflow_module.ipynb`:
-
+Invoke 
 ```python
 DEFAULT_QUERY = "What side effects do people report?"
 
@@ -225,14 +223,11 @@ try:
 except NameError:
     QUERY = DEFAULT_QUERY
 ```
-
-Invoke with:
+with:
 
 ```python
 result = app.invoke({"query": QUERY})
 ```
-
----
 
 # 🧪 Example Queries
 
