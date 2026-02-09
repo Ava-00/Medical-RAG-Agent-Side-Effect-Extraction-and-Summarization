@@ -53,7 +53,6 @@ medical-rag-agent/
 ├── workflow_execution_script.py
 ├── README.md
 ├── requirements.txt
-├── LICENSE
 │
 ├── artifacts/
 │   ├── chunks.parquet
