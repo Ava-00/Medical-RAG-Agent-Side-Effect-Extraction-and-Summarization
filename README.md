@@ -54,11 +54,6 @@ medical-rag-agent/
 ├── README.md
 ├── requirements.txt
 │
-├── artifacts/
-│   ├── chunks.parquet
-│   ├── bm25_tokens.pkl
-│   └── dense_embeddings.npy
-│
 └── executed_notebooks/
 ```
 
