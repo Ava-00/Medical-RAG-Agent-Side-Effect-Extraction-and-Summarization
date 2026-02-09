@@ -265,37 +265,6 @@ result = app.invoke({"query": QUERY})
 
 ---
 
-# 📦 Installation
-
-Create `requirements.txt`:
-
-```
-langgraph
-langchain
-transformers
-sentence-transformers
-rank-bm25
-numpy
-pandas
-torch
-nbclient
-nbformat
-```
-
-Install:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-# 📜 License
-
-MIT License
-
----
-
 # ✨ Acknowledgements
 
 * UCI Machine Learning Repository
